@@ -29,6 +29,8 @@ public:
 
     QString calculation(bool *ok=NULL);
 
+    QString memoryValue;
+
 
 private slots:
     void btnNumClicked();
@@ -46,9 +48,15 @@ private slots:
     void btnPlusMinusClicked();
 
     virtual void keyPressEvent(QKeyEvent *event);
-    void on_pushButton_18_clicked();
+    //void on_pushButton_18_clicked();
 
-    void on_btnPlusMinus_clicked();
+    //void on_btnPlusMinus_clicked();
+
+    void on_btnMS_clicked();
+
+    void on_btnMR_clicked();
+
+    void on_btnMC_clicked();
 
 private:
     Ui::MainWindow *ui;
