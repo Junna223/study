@@ -1,22 +1,16 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "scienceview.h"
+#include "ui_scienceview.h"
 #include <math.h>
 #include <QDebug>
 #include <QMessageBox>
+#include <QtMath>
+#include <cmath>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+scienceview::scienceview(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::scienceview)
 {
     ui->setupUi(this);
-
-    // 初始化 scienceview 并隐藏
-    scienceView = new scienceview(this);
-    scienceView->hide();
-
-    connect(ui->scienceShow, &QAction::triggered, this, &MainWindow::on_scienceShow_triggered);
-
-
 
     // 初始化数字按钮和操作符按钮的连接
     digitBTNs = {
@@ -40,42 +34,43 @@ MainWindow::MainWindow(QWidget *parent)
         {Qt::Key_Minus, ui->btnMinus},
         {Qt::Key_Asterisk, ui->btnMultipe},
         {Qt::Key_Slash, ui->btnDivide},
-        {Qt::Key_Percent, ui->btnPercentage},
+
     };
 
     foreach(auto btn, operatorBTNs)
     connect(btn, SIGNAL(clicked()), this, SLOT(btnBinaryOperatorClicked()));
 
+    //单目运算符
     connect(ui->btnInverse, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
     connect(ui->btnSquare, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
     connect(ui->btnSqrt, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnCube, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnSin, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnSinh, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnCos, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnCosh, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnTan, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnTanh, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnTenToX, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnIndex, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnFactorial, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnLn, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
+    connect(ui->btnLog, SIGNAL(clicked()), this, SLOT(btnUnaryOperatorClicked()));
 
     connect(ui->btnMS, SIGNAL(clicked()), this, SLOT(on_btnMS_clicked()));
     connect(ui->btnMR, SIGNAL(clicked()), this, SLOT(on_btnMR_clicked()));
     connect(ui->btnMC, SIGNAL(clicked()), this, SLOT(on_btnMC_clicked()));
 }
 
-MainWindow::~MainWindow()
+
+scienceview::~scienceview()
 {
     delete ui;
 }
 
-void MainWindow::on_scienceShow_triggered()
+QString scienceview::calculation(bool *ok)
 {
-    scienceView->show();  // 显示 scienceview
-    setCentralWidget(scienceView);
-}
-
-void MainWindow::on_mainShow_triggered()
-{
-    // 假设 mainWidget 是 MainWindow 的主界面 widget
-    QWidget *mainWidget = ui->centralWidget; // 或者是你设置为主界面的 widget
-    mainWidget->show();
-}
-
-QString MainWindow::calculation(bool *ok)
-{
-    ui->statusbar->showMessage("calculation is in progress");
+    //ui->statusbar->showMessage("calculation is in progress");
     double result = 0;
 
     while (operands.size() >= 2 && !opcodes.isEmpty())
@@ -107,7 +102,7 @@ QString MainWindow::calculation(bool *ok)
         {
             if (operand2 == 0)
             {
-                ui->statusbar->showMessage("Error: Division by zero");
+                //ui->statusbar->showMessage("Error: Division by zero");
                 return "Error";
             }
             result = operand1 / operand2;
@@ -124,15 +119,13 @@ QString MainWindow::calculation(bool *ok)
     }
     else
     {
-        ui->statusbar->showMessage("Invalid input: not enough operands or operators");
+        //ui->statusbar->showMessage("Invalid input: not enough operands or operators");
     }
 
     return QString::number(result);
 }
 
-
-
-void MainWindow::btnNumClicked()
+void scienceview::btnNumClicked()
 {
     QString digit = qobject_cast<QPushButton *>(sender())->text();
     if (operand == "0" && digit != "0")
@@ -142,28 +135,7 @@ void MainWindow::btnNumClicked()
     ui->display->setText(operand);
 }
 
-void MainWindow::on_btnPeriod_clicked()
-{
-    if (!operand.contains("."))
-        operand += ".";
-    ui->display->setText(operand);
-}
-
-void MainWindow::on_btnDel_clicked()
-{
-    operand = operand.left(operand.length() - 1);
-    ui->display->setText(operand);
-}
-
-void MainWindow::on_btnClear_clicked()
-{
-    operand.clear();
-    operands.clear();
-    opcodes.clear();
-    ui->display->setText("0");
-}
-
-void MainWindow::btnBinaryOperatorClicked()
+void scienceview::btnBinaryOperatorClicked()
 {
     QString opcode = qobject_cast<QPushButton *>(sender())->text();
 
@@ -185,30 +157,96 @@ void MainWindow::btnBinaryOperatorClicked()
     }
 }
 
-void MainWindow::btnUnaryOperatorClicked()
+void scienceview::btnUnaryOperatorClicked()
 {
-    if (!operand.isEmpty())
-    {
-        double result = operand.toDouble();
-        operand = "";
+    QPushButton *clickedButton = qobject_cast<QPushButton *>(sender());
+    QString clickedOperator = clickedButton->text();
+    double operand = ui->display->text().toDouble();
+    double result = 0.0;
 
-        QString op = qobject_cast<QPushButton*>(sender())->text();
+    if (clickedOperator == tr("√")) {
+        if (operand < 0.0) {
 
-        if (op == "%")
-            result /= 100.0;
-        else if (op == "1/x")
-            result = 1 / result;
-        else if (op == "x^2")
-            result *= result;
-        else if (op == "√")
-            result = sqrt(result);
+            return;
+        }
+        result = std::sqrt(operand); // 使用 std::sqrt
+    } else if (clickedOperator == tr("x^2")) {
+        result = std::pow(operand, 2.0); // 使用 std::pow
+    } else if (clickedOperator == tr("x^3")) {
+        result = std::pow(operand, 3.0); // 使用 std::pow
+    } else if (clickedOperator == tr("1/X")) {
+        if (operand == 0.0) {
 
-        ui->display->setText(QString::number(result));
-        operand = QString::number(result);
+            return;
+        }
+        result = 1.0 / operand;
+    } else if (clickedOperator == tr("ln")) {
+        if (operand < 0.0) {
+
+            return;
+        }
+        result = std::log(operand); // 使用 std::log
+    } else if (clickedOperator == tr("log")) {
+        if (operand < 0.0) {
+
+            return;
+        }
+        result = std::log10(operand); // 使用 std::log10
+    } else if (clickedOperator == tr("sin")) {
+        result = std::sin(operand * M_PI / 180); // 转换为弧度
+    } else if (clickedOperator == tr("sinh")) {
+        result = std::sinh(operand); // 使用 std::sinh
+    } else if (clickedOperator == tr("cos")) {
+        result = std::cos(operand * M_PI / 180); // 转换为弧度
+    } else if (clickedOperator == tr("cosh")) {
+        result = std::cosh(operand); // 使用 std::cosh
+    } else if (clickedOperator == tr("tan")) {
+        result = std::tan(operand * M_PI / 180); // 转换为弧度
+    } else if (clickedOperator == tr("tanh")) {
+        result = std::tanh(operand);
+    } else if (clickedOperator == tr("n!")) {
+        if (operand < 0.0) {
+
+            return;
+        }
+        result = std::tgamma(operand + 1); // 使用 std::tgamma
+    } else if (clickedOperator == tr("e^x")) {
+        result = std::exp(operand); // 使用 std::exp
+    } else if (clickedOperator == tr("10^x")) {
+        result = std::pow(10,operand); // 使用 std::pow
+    } else if (clickedOperator == tr("Int")) {
+        result = std::floor(operand); // 使用 std::floor
+    } else if (clickedOperator == tr("Not")) {
+        // 逻辑非的实现需要自定义，这里假设为按位取反
+        result = ~(int)(operand);
     }
+
+    ui->display->setText(QString::number(result));
+    //waitingForOperand = true;
 }
 
-void MainWindow::on_btnEqual_clicked()
+void scienceview::on_btnPeriod_clicked()
+{
+    if (!operand.contains("."))
+        operand += ".";
+    ui->display->setText(operand);
+}
+
+void scienceview::on_btnDel_clicked()
+{
+    operand = operand.left(operand.length() - 1);
+    ui->display->setText(operand);
+}
+
+void scienceview::on_btnClear_clicked()
+{
+    operand.clear();
+    operands.clear();
+    opcodes.clear();
+    ui->display->setText("0");
+}
+
+void scienceview::on_btnEqual_clicked()
 {
     if (!operand.isEmpty())
     {
@@ -225,12 +263,12 @@ void MainWindow::on_btnEqual_clicked()
     }
     else
     {
-        ui->statusbar->showMessage("Invalid input: not enough operands or operators");
+        //ui->statusbar->showMessage("Invalid input: not enough operands or operators");
         ui->display->setText("0");
     }
 }
 
-void MainWindow::btnPlusMinusClicked()
+void scienceview::btnPlusMinusClicked()
 {
     if (!operand.isEmpty())
     {
@@ -241,7 +279,7 @@ void MainWindow::btnPlusMinusClicked()
     }
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
+void scienceview::keyPressEvent(QKeyEvent *event)
 {
     foreach (auto btnKey, digitBTNs.keys())
     {
@@ -259,12 +297,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MainWindow::on_btnMS_clicked()
+void scienceview::on_btnMS_clicked()
 {
     memoryValue = ui->display->text();
 }
 
-void MainWindow::on_btnMR_clicked()
+void scienceview::on_btnMR_clicked()
 {
     if (!operand.isEmpty() || !operands.isEmpty() || !opcodes.isEmpty())
     {
@@ -292,7 +330,8 @@ void MainWindow::on_btnMR_clicked()
     }
 }
 
-void MainWindow::on_btnMC_clicked()
+void scienceview::on_btnMC_clicked()
 {
     memoryValue = "";
 }
+

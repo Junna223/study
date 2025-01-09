@@ -1,28 +1,24 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SCIENCEVIEW_H
+#define SCIENCEVIEW_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QStack>
 #include <QLabel>
 #include <QKeyEvent>
 #include <QMap>
 #include <QPushButton>
-#include "scienceview.h"
 
-#include <QMenuBar>
+namespace Ui {
+class scienceview;
+}
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
+class scienceview : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
+    explicit scienceview(QWidget *parent = nullptr);
+    ~scienceview();
 
     QString operand;
     QString opcode;
@@ -37,12 +33,10 @@ public:
 
 
 private slots:
-    void on_scienceShow_triggered();
-    void on_mainShow_triggered();
-
     void btnNumClicked();
     void btnBinaryOperatorClicked();
     void btnUnaryOperatorClicked();
+
 
     void on_btnPeriod_clicked();
 
@@ -55,9 +49,6 @@ private slots:
     void btnPlusMinusClicked();
 
     virtual void keyPressEvent(QKeyEvent *event);
-    //void on_pushButton_18_clicked();
-
-    //void on_btnPlusMinus_clicked();
 
     void on_btnMS_clicked();
 
@@ -66,9 +57,7 @@ private slots:
     void on_btnMC_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    scienceview *scienceView;
-
-
+    Ui::scienceview *ui;
 };
-#endif // MAINWINDOW_H
+
+#endif // SCIENCEVIEW_H
