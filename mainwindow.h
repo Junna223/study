@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include "scienceview.h"
 #include "dateview.h"
+#include "capacityconversionview.h"
 #include <QStackedWidget>
 
 #include <QMenuBar>
@@ -41,6 +42,7 @@ public:
 private slots:
     void on_scienceShow_triggered();
     void on_dateShow_triggered();
+    void on_capacityShow_triggered();
     void on_mainShow_triggered();
 
     void btnNumClicked();
@@ -72,6 +74,7 @@ private:
     Ui::MainWindow *ui;
     scienceview *scienceView;
     dateview *dateView;
+    CapacityConversionView *capacityconversionView;
     QStackedWidget *stackedWidget;
 
 

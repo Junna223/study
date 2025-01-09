@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     dateView = new dateview(this);
     dateView->hide();
 
+    capacityconversionView = new CapacityConversionView(this);
+    capacityconversionView->hide();
+
     connect(ui->scienceShow, &QAction::triggered, this, &MainWindow::on_scienceShow_triggered);
     connect(ui->dateShow, &QAction::triggered, this, &MainWindow::on_dateShow_triggered);
 
@@ -77,6 +80,12 @@ void MainWindow::on_dateShow_triggered()
     dateView->show();
     setCentralWidget(dateView);
 
+}
+
+void MainWindow::on_capacityShow_triggered()
+{
+    capacityconversionView->show();
+    setCentralWidget(capacityconversionView);
 }
 
 void MainWindow::on_mainShow_triggered()
