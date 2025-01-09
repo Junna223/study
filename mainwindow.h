@@ -8,6 +8,8 @@
 #include <QMap>
 #include <QPushButton>
 #include "scienceview.h"
+#include "dateview.h"
+#include <QStackedWidget>
 
 #include <QMenuBar>
 
@@ -38,6 +40,7 @@ public:
 
 private slots:
     void on_scienceShow_triggered();
+    void on_dateShow_triggered();
     void on_mainShow_triggered();
 
     void btnNumClicked();
@@ -68,6 +71,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     scienceview *scienceView;
+    dateview *dateView;
+    QStackedWidget *stackedWidget;
 
 
 };

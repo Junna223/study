@@ -10,11 +10,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+
     // 初始化 scienceview 并隐藏
     scienceView = new scienceview(this);
     scienceView->hide();
 
+    dateView = new dateview(this);
+    dateView->hide();
+
     connect(ui->scienceShow, &QAction::triggered, this, &MainWindow::on_scienceShow_triggered);
+    connect(ui->dateShow, &QAction::triggered, this, &MainWindow::on_dateShow_triggered);
+
 
 
 
@@ -66,10 +72,17 @@ void MainWindow::on_scienceShow_triggered()
     setCentralWidget(scienceView);
 }
 
+void MainWindow::on_dateShow_triggered()
+{
+    dateView->show();
+    setCentralWidget(dateView);
+
+}
+
 void MainWindow::on_mainShow_triggered()
 {
     // 假设 mainWidget 是 MainWindow 的主界面 widget
-    QWidget *mainWidget = ui->centralWidget; // 或者是你设置为主界面的 widget
+    QWidget *mainWidget = ui->centralwidget; // 或者是你设置为主界面的 widget
     mainWidget->show();
 }
 
