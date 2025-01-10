@@ -21,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
     capacityconversionView = new CapacityConversionView(this);
     capacityconversionView->hide();
 
+    currencycoversionView = new CurrencyConversionView(this);
+    currencycoversionView->hide();
+
     connect(ui->scienceShow, &QAction::triggered, this, &MainWindow::on_scienceShow_triggered);
     connect(ui->dateShow, &QAction::triggered, this, &MainWindow::on_dateShow_triggered);
 
@@ -86,6 +89,12 @@ void MainWindow::on_capacityShow_triggered()
 {
     capacityconversionView->show();
     setCentralWidget(capacityconversionView);
+}
+
+void MainWindow::on_currencyShow_triggered()
+{
+    currencycoversionView->show();
+    setCentralWidget(currencycoversionView);
 }
 
 void MainWindow::on_mainShow_triggered()

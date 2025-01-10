@@ -10,6 +10,7 @@
 #include "scienceview.h"
 #include "dateview.h"
 #include "capacityconversionview.h"
+#include "currencyconversionview.h"
 #include <QStackedWidget>
 
 #include <QMenuBar>
@@ -43,6 +44,7 @@ private slots:
     void on_scienceShow_triggered();
     void on_dateShow_triggered();
     void on_capacityShow_triggered();
+    void on_currencyShow_triggered();
     void on_mainShow_triggered();
 
     void btnNumClicked();
@@ -75,6 +77,7 @@ private:
     scienceview *scienceView;
     dateview *dateView;
     CapacityConversionView *capacityconversionView;
+    CurrencyConversionView *currencycoversionView;
     QStackedWidget *stackedWidget;
 
 
